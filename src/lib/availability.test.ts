@@ -58,4 +58,17 @@ describe('checkAvailability', () => {
       expect(result.available).toBe(tc.expected);
     });
   }
+   it('TC16: checkAvailability mutates the original bookings array', () => {
+    const room = buildRoom(false, [
+      [600, 660],
+      [900, 960],
+      [720, 780],
+    ]);
+
+    const originalBookings = [...room.bookings];
+
+    checkAvailability(room, 1020, 1080, 540);
+
+    expect(room.bookings).toEqual(originalBookings);
+  });
 });
