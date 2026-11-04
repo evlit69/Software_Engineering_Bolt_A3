@@ -1,7 +1,6 @@
 # AGENTS.md
 ## Project
-Smart Campus room availability checker. One room, fictional bookings,
-fixed current time. Availability decision only.
+Smart Campus room availability checker. One room, fictional bookings, fixed current time. Availability decision only.
 ## Structure
 - src/lib/availability.ts: checkAvailability (booking rules) and selectedRoom fixture
 - src/lib/availability.test.ts: regression tests for AC1-AC6
@@ -25,7 +24,12 @@ No backend, login, database or booking creation.
 - Do not delete or weaken existing test assertions.
 - Do not edit files unrelated to the task.
 ## Commands
-(впишите реальные команды из package.json, например: npm install, npm run dev, npm test)
+- Install: npm install
+- Dev server: npm run dev
+- Type check: npm run typecheck
+- Lint: npm run lint
+- Build: npm run build
+- Tests: npx vitest run
 ## Verification
 Run existing tests and add focused regression tests.
 Report changed files, rationale and test evidence.
