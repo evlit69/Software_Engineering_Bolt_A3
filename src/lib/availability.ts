@@ -101,8 +101,7 @@ export function checkAvailability(
       message: `Requested time must be within room hours (${minutesToLabel(room.openTime)}–${minutesToLabel(room.closeTime)}).`,
     };
   }
-    room.bookings.sort((a, b) => b.start - a.start);
-  const conflict = room.bookings.find((b) => start <= b.end && end >= b.start);
+  const conflict = room.bookings.find((b) => start < b.end && end > b.start);
   if (conflict) {
     return {
       available: false,
