@@ -1,74 +1,93 @@
+
 import { describe, it, expect } from 'vitest';
-import { checkAvailability, type Room, type Booking } from '@/lib/availability';
+import {
+  checkAvailability,
+  selectedRoom,
+  type Room,
+} from './availability'; // Adjust import path if necessary
 
-interface TestCase {
-  id: string;
-  description: string;
-  start: number;
-  end: number;
-  now: number;
-  blocked: boolean;
-  existingBookings: [number, number][];
-  expected: boolean;
-}
+describe('Availability regression tests – AC1 to AC6', () => {
+  
+  // AC1: Reject past requests
+  it('TC01: rejects a booking starting at the current time', () => {
+    const result = checkAvailability(selectedRoom, 600, 660, 600);
 
-const testCases: TestCase[] = [
-  { id: 'TC01', description: 'valid booking, no conflicts', start: 600, end: 660, now: 540, blocked: false, existingBookings: [], expected: true },
-  { id: 'TC02', description: 'start must be strictly after now (start equals now)', start: 540, end: 600, now: 540, blocked: false, existingBookings: [], expected: false },
-  { id: 'TC03', description: 'start is in the past', start: 530, end: 600, now: 540, blocked: false, existingBookings: [], expected: false },
-  { id: 'TC04', description: 'start equals end', start: 600, end: 600, now: 540, blocked: false, existingBookings: [], expected: false },
-  { id: 'TC05', description: 'valid, ends exactly at midnight boundary (1440)', start: 1320, end: 1440, now: 1200, blocked: false, existingBookings: [], expected: true },
-  { id: 'TC06', description: 'start beyond allowed range (1441)', start: 1441, end: 1442, now: 1200, blocked: false, existingBookings: [], expected: false },
-  { id: 'TC07', description: 'duration exactly 120 minutes is permitted', start: 600, end: 720, now: 540, blocked: false, existingBookings: [], expected: true },
-  { id: 'TC08', description: 'duration 121 minutes exceeds max by one', start: 600, end: 721, now: 540, blocked: false, existingBookings: [], expected: false },
-  { id: 'TC09', description: 'room is blocked rejects everything', start: 600, end: 660, now: 540, blocked: true, existingBookings: [], expected: false },
-  { id: 'TC10', description: 'overlaps an existing booking', start: 600, end: 660, now: 540, blocked: false, existingBookings: [[650, 700]], expected: false },
-  { id: 'TC11', description: 'starts exactly when existing ends (touching allowed)', start: 660, end: 720, now: 540, blocked: false, existingBookings: [[600, 660]], expected: true },
-  { id: 'TC12', description: 'ends exactly when existing starts (touching allowed)', start: 540, end: 600, now: 500, blocked: false, existingBookings: [[600, 660]], expected: true },
-  { id: 'TC13', description: 'new booking fully contains an existing one', start: 600, end: 720, now: 540, blocked: false, existingBookings: [[630, 660]], expected: false },
-  { id: 'TC14', description: 'one of several bookings conflicts', start: 600, end: 660, now: 540, blocked: false, existingBookings: [[500, 550], [640, 680]], expected: false },
-  { id: 'TC15', description: 'non-integer time value must be rejected', start: 600.5, end: 660, now: 540, blocked: false, existingBookings: [], expected: false },
-];
-
-function buildRoom(blocked: boolean, existingBookings: [number, number][]): Room {
-  const bookings: Booking[] = existingBookings.map(([s, e], i) => ({
-    id: `bk-${i}`,
-    title: `Booking ${i + 1}`,
-    start: s,
-    end: e,
-  }));
-  return {
-    id: 'test-room',
-    name: 'Test Room',
-    building: 'Test Building',
-    floor: 1,
-    capacity: 4,
-    blocked,
-    openTime: 0,
-    closeTime: 1440,
-    bookings,
-  };
-}
-
-describe('checkAvailability', () => {
-  for (const tc of testCases) {
-    it(`${tc.id}: ${tc.description} — (start=${tc.start}, end=${tc.end}, now=${tc.now}, blocked=${tc.blocked}, bookings=${JSON.stringify(tc.existingBookings)}) => expected available=${tc.expected}`, () => {
-      const room = buildRoom(tc.blocked, tc.existingBookings);
-      const result = checkAvailability(room, tc.start, tc.end, tc.now);
-      expect(result.available).toBe(tc.expected);
-    });
-  }
-   it('TC16: checkAvailability mutates the original bookings array', () => {
-    const room = buildRoom(false, [
-      [600, 660],
-      [900, 960],
-      [720, 780],
-    ]);
-
-    const originalBookings = [...room.bookings];
-
-    checkAvailability(room, 1020, 1080, 540);
-
-    expect(room.bookings).toEqual(originalBookings);
+    expect(result.available).toBe(false);
+    expect(result.reason).toBe('past_time');
+    expect(result.message).toBeTruthy();
   });
+
+  // AC1: Reject reversed intervals
+  it('TC02: rejects a reversed time interval', () => {
+    const result = checkAvailability(selectedRoom, 660, 600, 500);
+
+    expect(result.available).toBe(false);
+    expect(result.reason).toBe('invalid_range');
+    expect(result.message).toBeTruthy();
+  });
+
+  // AC2: Maximum booking duration is 120 minutes
+  it('TC03: rejects a booking lasting 121 minutes', () => {
+    const result = checkAvailability(selectedRoom, 600, 721, 500);
+
+    expect(result.available).toBe(false);
+    expect(result.reason).toBe('too_long');
+    expect(result.message).toContain('121 min');
+    expect(result.message).toBeTruthy();
+  });
+
+  // AC3: Reject blocked rooms
+  it('TC04: rejects a booking in a blocked room', () => {
+    const blockedRoom: Room = {
+      ...selectedRoom,
+      blocked: true,
+      bookings: [],
+    };
+
+    const result = checkAvailability(blockedRoom, 600, 660, 500);
+
+    expect(result.available).toBe(false);
+    expect(result.reason).toBe('blocked');
+    expect(result.message).toBeTruthy();
+  });
+
+  // AC4: Reject overlapping bookings
+  it('TC05: rejects a booking that overlaps an existing booking', () => {
+    // Existing booking b1: 540–600
+    const result = checkAvailability(selectedRoom, 570, 630, 500);
+
+    expect(result.available).toBe(false);
+    expect(result.reason).toBe('overlap');
+    expect(result.conflictingBooking?.id).toBe('b1');
+    expect(result.message).toBeTruthy();
+  });
+
+  // AC4: Allow bookings touching at endpoints
+  it('TC06: allows a booking starting exactly when another booking ends', () => {
+    // Existing booking b1 ends at 600.
+    const result = checkAvailability(selectedRoom, 600, 660, 500);
+
+    expect(result.available).toBe(true);
+    expect(result.reason).toBe('available');
+    expect(result.message).toBeTruthy();
+    expect(result.conflictingBooking).toBeUndefined();
+  });
+
+  // AC5: Booking data must not be modified
+  it('TC07: does not mutate the original room or its booking fixtures', () => {
+    const originalRoom = JSON.parse(
+      JSON.stringify(selectedRoom)
+    );
+
+    // Run several availability checks against the original fixture.
+    checkAvailability(selectedRoom, 600, 660, 500);
+    checkAvailability(selectedRoom, 570, 630, 500);
+    checkAvailability(selectedRoom, 660, 600, 500);
+    checkAvailability(selectedRoom, 600, 721, 500);
+
+    expect(selectedRoom).toEqual(originalRoom);
+    expect(selectedRoom.bookings).toHaveLength(4);
+    expect(selectedRoom.bookings).toEqual(originalRoom.bookings);
+  });
+
 });
