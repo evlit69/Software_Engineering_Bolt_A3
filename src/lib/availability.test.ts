@@ -1,4 +1,3 @@
-
 import { describe, it, expect } from 'vitest';
 import {
   checkAvailability,
@@ -32,7 +31,7 @@ describe('Availability regression tests – AC1 to AC6', () => {
 
     expect(result.available).toBe(false);
     expect(result.reason).toBe('too_long');
-    expect(result.message).toContain('121 min');
+    expect(result.message).toContain('2 hr 1 min');
     expect(result.message).toBeTruthy();
   });
 
