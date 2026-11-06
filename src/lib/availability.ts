@@ -11,6 +11,7 @@ export interface Room {
   building: string;
   floor: number;
   capacity: number;
+  equipment: string[];
   blocked: boolean;
   openTime: number;  // minutes after midnight
   closeTime: number; // minutes after midnight
