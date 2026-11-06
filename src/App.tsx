@@ -127,7 +127,11 @@ export default function App() {
         </div>
 
         {/* Availability checker */}
-        <AvailabilityForm room={room} />
+        <AvailabilityForm
+          room={room}
+          rooms={roomCatalog}
+          onRoomChange={handleRoomChange}
+        />
 
         {/* Existing bookings list */}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
