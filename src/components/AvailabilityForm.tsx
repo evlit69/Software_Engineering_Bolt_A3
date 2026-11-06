@@ -115,42 +115,77 @@ export default function AvailabilityForm({ room }: AvailabilityFormProps) {
           <h2 className="text-base font-semibold text-slate-800">Check Availability</h2>
         </div>
 
-            <div className="mb-4">
-      <label
-        htmlFor="attendees"
-        className="mb-1.5 block text-sm font-medium text-slate-600"
-      >
-        Required attendees
-      </label>
-    
-      <input
-        id="attendees"
-        type="number"
-        min="1"
-        max="30"
-        step="1"
-        value={attendees}
-        onChange={(e) => {
-          const value = Number(e.target.value);
-    
-          if (e.target.value === '') {
-            setAttendees(0);
-          } else {
-            setAttendees(value);
-          }
-    
-          setResult(null);
-          setCandidate(undefined);
-        }}
-        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-800 shadow-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-      />
-    
-      {attendees < 1 && (
-        <p className="mt-1 text-xs text-amber-600">
-          Enter at least one attendee.
-        </p>
-      )}
-    </div>
+        <div className="mb-4">
+            <label
+              htmlFor="attendees"
+              className="mb-1.5 block text-sm font-medium text-slate-600"
+            >
+              Required attendees
+            </label>
+          
+            <input
+              id="attendees"
+              type="number"
+              min="1"
+              max="30"
+              step="1"
+              value={attendees}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+          
+                if (e.target.value === '') {
+                  setAttendees(0);
+                } else {
+                  setAttendees(value);
+                }
+          
+                setResult(null);
+                setCandidate(undefined);
+              }}
+              className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-800 shadow-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+            />
+          
+            {attendees < 1 && (
+              <p className="mt-1 text-xs text-amber-600">
+                Enter at least one attendee.
+              </p>
+            )}
+      </div>
+
+        <div className="mb-4">
+          <p className="mb-2 text-sm font-medium text-slate-600">
+            Required equipment
+          </p>
+        
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {equipmentOptions.map((equipment) => (
+              <label
+                key={equipment}
+                className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 text-sm text-slate-700"
+              >
+                <input
+                  type="checkbox"
+                  checked={requiredEquipment.includes(equipment)}
+                  onChange={() => {
+                    toggleEquipment(equipment);
+                    setResult(null);
+                    setCandidate(undefined);
+                  }}
+                  className="h-4 w-4 rounded border-slate-300"
+                />
+        
+                <span className="capitalize">{equipment}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-4 text-sm text-slate-500">
+          {matchingRooms.length} matching room
+          {matchingRooms.length !== 1 ? 's' : ''}
+        </div>
+
+        
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
