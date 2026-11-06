@@ -182,5 +182,9 @@ export const roomCatalog: Room[] = [
   },
 ];
 
+export function getRoomById(roomId: string): Room | undefined {
+  return roomCatalog.find((room) => room.id === roomId);
+}
+
 // Backward compatibility with the existing App.tsx.
 export const selectedRoom: Room = roomCatalog[0];
