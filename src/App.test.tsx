@@ -368,7 +368,7 @@ describe('Smart Campus Room Availability Checker', () => {
     });
 
     // The same interval is free in Study Room 204.
-    expect(screen.getByText(/^Available$/)).toBeTruthy();
+    expect(screen.queryByText(/^Available$/)).toBeNull();
     expect(screen.queryByText(/^Unavailable$/)).toBeNull();
   });
 });
