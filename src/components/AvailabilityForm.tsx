@@ -59,9 +59,7 @@ export default function AvailabilityForm({  room,  rooms,  onRoomChange, }: Avai
   const matchingRooms = useMemo(
     () => filterRooms(rooms ?? [room], attendees, requiredEquipment),
     [rooms, room, attendees, requiredEquipment]
-  );
-
-  useEffect(() => {
+    useEffect(() => {
   const currentRoomMatches = matchingRooms.some(
     (matchingRoom) => matchingRoom.id === room.id
   );
@@ -72,6 +70,8 @@ export default function AvailabilityForm({  room,  rooms,  onRoomChange, }: Avai
     setCandidate(undefined);
   }
 }, [matchingRooms, room.id, onRoomChange]);
+  );
+
   
   const toggleEquipment = (equipment: string) => {
     setRequiredEquipment((current) =>
