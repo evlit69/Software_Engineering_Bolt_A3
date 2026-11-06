@@ -37,7 +37,7 @@ export default function AvailabilityForm({
 
   const previousRoomId = useRef(room.id);
 
-applyAvailabilityResult(nextResult, start, end);
+  applyAvailabilityResult(nextResult, start, end);
 
   setCandidate(
     nextResult.available ||
