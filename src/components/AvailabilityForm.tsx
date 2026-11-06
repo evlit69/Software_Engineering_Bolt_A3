@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Clock, AlertCircle, CheckCircle2, CalendarClock } from 'lucide-react';
 import type { Room, AvailabilityResult } from '@/lib/availability';
 import {
@@ -6,13 +6,16 @@ import {
   getNowMinutes,
   minutesToLabel,
   durationLabel,
+  filterRooms,
   MAX_DURATION,
   MINUTES_IN_DAY,
 } from '@/lib/availability';
 import Timeline from './Timeline';
 
+
 interface AvailabilityFormProps {
   room: Room;
+  rooms?: Room[];
 }
 
 function parseTimeInput(value: string): number | null {
@@ -41,6 +44,29 @@ export default function AvailabilityForm({ room }: AvailabilityFormProps) {
   const [result, setResult] = useState<AvailabilityResult | null>(null);
   const [candidate, setCandidate] = useState<{ start: number; end: number } | undefined>(undefined);
   const [nowMin, setNowMin] = useState(getNowMinutes());
+  const [attendees, setAttendees] = useState(1);
+
+  const [requiredEquipment, setRequiredEquipment] = useState<string[]>([]);
+  
+  const equipmentOptions = [
+    'projector',
+    'whiteboard',
+    'computers',
+    'microphone',
+  ];
+  
+  const matchingRooms = useMemo(
+    () => filterRooms(rooms ?? [room], attendees, requiredEquipment),
+    [rooms, room, attendees, requiredEquipment]
+  );
+  
+  const toggleEquipment = (equipment: string) => {
+    setRequiredEquipment((current) =>
+      current.includes(equipment)
+        ? current.filter((item) => item !== equipment)
+        : [...current, equipment]
+    );
+  };
 
   const handleCheck = useCallback(() => {
     const currentNow = getNowMinutes();
@@ -88,6 +114,43 @@ export default function AvailabilityForm({ room }: AvailabilityFormProps) {
           <CalendarClock className="h-5 w-5 text-slate-600" />
           <h2 className="text-base font-semibold text-slate-800">Check Availability</h2>
         </div>
+
+            <div className="mb-4">
+      <label
+        htmlFor="attendees"
+        className="mb-1.5 block text-sm font-medium text-slate-600"
+      >
+        Required attendees
+      </label>
+    
+      <input
+        id="attendees"
+        type="number"
+        min="1"
+        max="30"
+        step="1"
+        value={attendees}
+        onChange={(e) => {
+          const value = Number(e.target.value);
+    
+          if (e.target.value === '') {
+            setAttendees(0);
+          } else {
+            setAttendees(value);
+          }
+    
+          setResult(null);
+          setCandidate(undefined);
+        }}
+        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-800 shadow-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+      />
+    
+      {attendees < 1 && (
+        <p className="mt-1 text-xs text-amber-600">
+          Enter at least one attendee.
+        </p>
+      )}
+    </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
