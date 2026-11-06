@@ -300,10 +300,17 @@ export default function AvailabilityForm({
         </div>
 
         {/* Matching rooms */}
-        <div className="mb-4 text-sm text-slate-500">
-          {matchingRooms.length} matching room
-          {matchingRooms.length !== 1 ? 's' : ''}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-medium text-slate-700">
+            Matching rooms
+          </p>
+        
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+            {matchingRooms.length} found
+          </span>
         </div>
+
+        
 
         {/* Room selection */}
         <div className="mb-4">
@@ -329,14 +336,31 @@ export default function AvailabilityForm({
               ))}
             </select>
           ) : (
-            <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
-              No rooms match your requirements.
-            </p>
+            <div
+              role="status"
+              className="rounded-xl border border-amber-200 bg-amber-50 p-5 text-center"
+            >
+              <div className="mb-2 flex justify-center">
+                <AlertCircle className="h-8 w-8 text-amber-600" />
+              </div>
+            
+              <h3 className="text-sm font-semibold text-amber-800">
+                No matching rooms found
+              </h3>
+            
+              <p className="mt-1 text-sm text-amber-700">
+                No rooms currently meet your attendee and equipment requirements.
+              </p>
+            
+              <p className="mt-2 text-xs text-amber-600">
+                Try reducing the number of attendees or removing an equipment requirement.
+              </p>
+            </div>
           )}
         </div>
 
         {/* Time inputs */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label
               htmlFor="start-time"
