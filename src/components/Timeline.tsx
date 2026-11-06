@@ -21,7 +21,7 @@ const SPAN_MAX = END_HOUR * 60;
 const SPAN = SPAN_MAX - SPAN_MIN;
 
 // Each hour gets a generous pixel width so the timeline never crams.
-const HOUR_PX = 56;
+const HOUR_PX = TIMELINE_HOUR_WIDTH;
 const TRACK_WIDTH = (END_HOUR - START_HOUR) * HOUR_PX;
 
 function xPos(min: number): number {
