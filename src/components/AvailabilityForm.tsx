@@ -8,6 +8,7 @@ import {
   minutesToLabel,
   durationLabel,
   MAX_DURATION,
+  parseTimeInput,
 } from '@/lib/availability';
 
 import { filterRooms } from '@/lib/roomFilters';
