@@ -37,6 +37,22 @@ export default function AvailabilityForm({
 
   const previousRoomId = useRef(room.id);
 
+  const applyAvailabilityResult = (
+  nextResult: AvailabilityResult,
+  start: number,
+  end: number
+) => {
+  setResult(nextResult);
+
+  setCandidate(
+    nextResult.available ||
+    nextResult.reason === 'overlap' ||
+    nextResult.reason === 'out_of_hours'
+      ? { start, end }
+      : undefined
+  );
+};
+
   const equipmentOptions = [
     'projector',
     'whiteboard',
