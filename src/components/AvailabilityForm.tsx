@@ -56,13 +56,6 @@ export default function AvailabilityForm({
     );
   };
 
-  const equipmentOptions = [
-    'projector',
-    'whiteboard',
-    'computers',
-    'microphone',
-  ];
-
   const matchingRooms = useMemo(
     () => filterRooms(rooms, attendees, requiredEquipment),
     [rooms, attendees, requiredEquipment]
