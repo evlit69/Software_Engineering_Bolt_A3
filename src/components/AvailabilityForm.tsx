@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
++import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Clock, AlertCircle, CheckCircle2, CalendarClock } from 'lucide-react';
 import type { Room, AvailabilityResult } from '@/lib/availability';
 import {
