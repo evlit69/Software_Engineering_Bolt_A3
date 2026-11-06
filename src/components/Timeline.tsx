@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import type { Room, Booking } from '@/lib/availability';
 import { minutesToLabel, MINUTES_IN_DAY } from '@/lib/availability';
+import {
+  TIMELINE_START_HOUR,
+  TIMELINE_END_HOUR,
+  TIMELINE_HOUR_WIDTH,
+} from '@/lib/config';
 
 interface TimelineProps {
   room: Room;
