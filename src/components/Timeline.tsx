@@ -56,7 +56,10 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
         </div>
       </div>
 
-      <div className="overflow-x-auto pb-2">
+        <div
+          className="w-full overflow-x-auto overscroll-x-contain pb-3"
+          aria-label="Room booking timeline. Scroll horizontally to view the schedule."
+        >
         <div style={{ minWidth: TRACK_WIDTH }}>
           {/* Gridlines layer */}
           <div className="relative" style={{ height: 0 }}>
