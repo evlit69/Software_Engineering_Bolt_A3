@@ -15,7 +15,8 @@ import Timeline from './Timeline';
 
 interface AvailabilityFormProps {
   room: Room;
-  rooms?: Room[];
+  rooms: Room[];
+  onRoomChange: (room: Room) => void;
 }
 
 function parseTimeInput(value: string): number | null {
