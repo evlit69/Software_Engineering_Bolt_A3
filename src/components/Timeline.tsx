@@ -14,8 +14,8 @@ interface TimelineProps {
   nowMinutes: number;
 }
 
-const START_HOUR = 8;
-const END_HOUR = 22;
+const START_HOUR = TIMELINE_START_HOUR;
+const END_HOUR = TIMELINE_END_HOUR;
 const SPAN_MIN = START_HOUR * 60;
 const SPAN_MAX = END_HOUR * 60;
 const SPAN = SPAN_MAX - SPAN_MIN;
