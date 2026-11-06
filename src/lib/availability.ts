@@ -46,6 +46,24 @@ export function minutesToLabel(min: number): string {
   return `${displayH}:${m.toString().padStart(2, '0')} ${period}`;
 }
 
+
+export function parseTimeInput(value: string): number | null {
+  const m = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!m) return null;
+
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  const period = m[3].toUpperCase();
+
+  if (h < 1 || h > 12 || min < 0 || min > 59) return null;
+
+  if (period === 'AM') h = h === 12 ? 0 : h;
+  else h = h === 12 ? 12 : h + 12;
+
+  return h * 60 + min;
+}
+
+
 export function durationLabel(min: number): string {
   if (min < 60) return `${min} min`;
   const h = Math.floor(min / 60);
