@@ -274,7 +274,7 @@ export default function AvailabilityForm({
           </p>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-            {equipmentOptions.map((equipment) => (
+              EQUIPMENT_OPTIONS.map((equipment) => (
               <label
                 key={equipment}
                 className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 text-sm text-slate-700"
