@@ -60,6 +60,18 @@ export default function AvailabilityForm({  room,  rooms,  onRoomChange, }: Avai
     () => filterRooms(rooms ?? [room], attendees, requiredEquipment),
     [rooms, room, attendees, requiredEquipment]
   );
+
+  useEffect(() => {
+  const currentRoomMatches = matchingRooms.some(
+    (matchingRoom) => matchingRoom.id === room.id
+  );
+
+  if (!currentRoomMatches && matchingRooms.length > 0) {
+    onRoomChange(matchingRooms[0]);
+    setResult(null);
+    setCandidate(undefined);
+  }
+}, [matchingRooms, room.id, onRoomChange]);
   
   const toggleEquipment = (equipment: string) => {
     setRequiredEquipment((current) =>
