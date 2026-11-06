@@ -44,14 +44,14 @@ export default function AvailabilityForm({
 ) => {
   setResult(nextResult);
 
-  setCandidate(
-    nextResult.available ||
-    nextResult.reason === 'overlap' ||
-    nextResult.reason === 'out_of_hours'
-      ? { start, end }
-      : undefined
-  );
-};
+   setCandidate(
+      nextResult.available ||
+      nextResult.reason === 'overlap' ||
+      nextResult.reason === 'out_of_hours'
+        ? { start, end }
+        : undefined
+    );
+  };
 
   const equipmentOptions = [
     'projector',
