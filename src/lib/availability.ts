@@ -118,9 +118,6 @@ export function checkAvailability(
   };
 }
 
-export function getRoomById(roomId: string): Room | undefined {
-  return roomCatalog.find((room) => room.id === roomId);
-}
 
 export function filterRooms(
   rooms: Room[],
@@ -144,6 +141,3 @@ export function filterRooms(
     return capacityMatches && equipmentMatches;
   });
 }
-
-// Backward compatibility with the existing App.tsx.
-export const selectedRoom: Room = roomCatalog[0];
