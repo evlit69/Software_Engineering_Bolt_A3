@@ -1,4 +1,7 @@
-
+import {
+  MAX_ATTENDEES,
+  EQUIPMENT_OPTIONS,
+} from '@/lib/config';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Clock, AlertCircle, CheckCircle2, CalendarClock } from 'lucide-react';
 import type { Room, AvailabilityResult } from '@/lib/availability';
