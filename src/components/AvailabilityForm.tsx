@@ -190,13 +190,7 @@ export default function AvailabilityForm({
 
     setResult(res);
 
-    setCandidate(
-      res.available ||
-      res.reason === 'overlap' ||
-      res.reason === 'out_of_hours'
-        ? { start, end }
-        : undefined
-    );
+    applyAvailabilityResult(res, start, end);
   }, [
     startInput,
     endInput,
