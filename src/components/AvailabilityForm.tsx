@@ -450,7 +450,9 @@ export default function AvailabilityForm({
       {/* Result */}
       {result && (
         <div
-          className={`rounded-2xl border p-5 shadow-sm transition sm:p-6 ${
+          role="status"
+          aria-live="polite"
+          className={`rounded-2xl border p-4 shadow-sm transition sm:p-6 ${
             result.available
               ? 'border-emerald-200 bg-emerald-50'
               : 'border-amber-200 bg-amber-50'
