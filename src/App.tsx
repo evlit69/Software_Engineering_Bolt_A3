@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { Users, MapPin, Building2, Lock, CalendarDays, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { selectedRoom, minutesToLabel } from '@/lib/availability';
+import {
+  selectedRoom,
+  roomCatalog,
+  minutesToLabel,
+} from '@/lib/availability';
+
+import { useCallback, useState } from 'react';
 import AvailabilityForm from '@/components/AvailabilityForm';
 
 export default function App() {
