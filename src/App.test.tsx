@@ -1,14 +1,15 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-
-import App from './App';
-
 import {
   checkAvailability,
-  filterRooms,
-  type Room,
 } from '@/lib/availability';
+
+import {
+  filterRooms,
+} from '@/lib/roomFilters';
+
+import App from './App';
 
 // Adjust this import if step 1 placed roomCatalog in a different file.
 import { roomCatalog } from '@/lib/roomData';
