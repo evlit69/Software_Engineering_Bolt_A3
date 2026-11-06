@@ -81,6 +81,50 @@ export default function AvailabilityForm({  room,  rooms,  onRoomChange, }: Avai
     );
   };
 
+  const handleRoomSelection = (roomId: string) => {
+  const nextRoom = matchingRooms.find(
+    (matchingRoom) => matchingRoom.id === roomId
+  );
+
+  if (!nextRoom) return;
+
+  const previousResult = result;
+
+  onRoomChange(nextRoom);
+
+  if (previousResult) {
+    const start = parseTimeInput(startInput.trim());
+    const end = parseTimeInput(endInput.trim());
+
+    if (start !== null && end !== null) {
+      const currentNow = getNowMinutes();
+      setNowMin(currentNow);
+
+      const nextResult = checkAvailability(
+        nextRoom,
+        start,
+        end,
+        currentNow
+      );
+
+      setResult(nextResult);
+
+      setCandidate(
+        nextResult.available ||
+        nextResult.reason === 'overlap' ||
+        nextResult.reason === 'out_of_hours'
+          ? { start, end }
+          : undefined
+      );
+
+      return;
+    }
+  }
+
+  setResult(null);
+  setCandidate(undefined);
+};
+
   const handleCheck = useCallback(() => {
     const currentNow = getNowMinutes();
     setNowMin(currentNow);
