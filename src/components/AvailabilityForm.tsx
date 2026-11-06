@@ -7,9 +7,10 @@ import {
   getNowMinutes,
   minutesToLabel,
   durationLabel,
-  filterRooms,
   MAX_DURATION,
 } from '@/lib/availability';
+
+import { filterRooms } from '@/lib/roomFilters';
 import Timeline from './Timeline';
 
 interface AvailabilityFormProps {
