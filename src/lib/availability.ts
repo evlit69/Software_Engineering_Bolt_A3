@@ -117,5 +117,3 @@ export function checkAvailability(
     message: `Room is available ${minutesToLabel(start)}–${minutesToLabel(end)} (${durationLabel(duration)}).`,
   };
 }
-
-}
