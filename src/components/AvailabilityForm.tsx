@@ -38,7 +38,7 @@ function toTimeInput(min: number): string {
   return `${dh}:${m.toString().padStart(2, '0')} ${period}`;
 }
 
-export default function AvailabilityForm({ room }: AvailabilityFormProps) {
+export default function AvailabilityForm({ room, rooms }: AvailabilityFormProps) {
   const [startInput, setStartInput] = useState('');
   const [endInput, setEndInput] = useState('');
   const [result, setResult] = useState<AvailabilityResult | null>(null);
