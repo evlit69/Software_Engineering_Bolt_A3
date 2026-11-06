@@ -1,4 +1,3 @@
-
 export const MAX_ATTENDEES = 30;
 
 export const EQUIPMENT_OPTIONS = [
