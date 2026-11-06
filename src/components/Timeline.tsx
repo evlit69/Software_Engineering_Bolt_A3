@@ -39,7 +39,7 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
     candidateStart >= SPAN_MIN && candidateEnd <= SPAN_MAX;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+      <div className="min-w-0 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-slate-700">Today's Schedule</h2>
         <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
