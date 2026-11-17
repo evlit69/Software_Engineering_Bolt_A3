@@ -7,6 +7,8 @@ export function filterRooms(rooms: Room[], attendees: number, requiredEquipment:
   }
 
   return rooms.filter((room) => {
+    if (room.blocked) return false;
+
     // F1: Room must accommodate all attendees.
     const capacityMatches = room.capacity >= attendees;
 
