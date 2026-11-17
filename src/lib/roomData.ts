@@ -1,4 +1,3 @@
-
 import type { Room } from './availability';
 
 export const roomCatalog: Room[] = [
@@ -44,9 +43,7 @@ export const roomCatalog: Room[] = [
     blocked: true,
     openTime: 480,
     closeTime: 1320,
-    bookings: [
-      { id: 'b7', title: 'Department Seminar', start: 660, end: 720 },
-    ],
+    bookings: [{ id: 'b7', title: 'Department Seminar', start: 660, end: 720 }],
   },
   {
     id: 'rm-210',

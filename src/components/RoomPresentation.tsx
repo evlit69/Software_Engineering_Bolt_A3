@@ -16,10 +16,7 @@ interface RoomPresentationProps {
   onToggleBlocked: () => void;
 }
 
-export default function RoomPresentation({
-  room,
-  onToggleBlocked,
-}: RoomPresentationProps) {
+export default function RoomPresentation({ room, onToggleBlocked }: RoomPresentationProps) {
   return (
     <>
       {/* Breadcrumb / Header */}
@@ -31,15 +28,11 @@ export default function RoomPresentation({
         </div>
 
         <div className="mt-1 flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-            {room.name}
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{room.name}</h1>
 
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-              room.blocked
-                ? 'bg-rose-100 text-rose-700'
-                : 'bg-emerald-100 text-emerald-700'
+              room.blocked ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
             }`}
           >
             {room.blocked ? (
@@ -71,25 +64,19 @@ export default function RoomPresentation({
         <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
           <Building2 className="h-4 w-4 text-slate-400" />
           <p className="mt-1.5 text-xs text-slate-400">Building</p>
-          <p className="text-sm font-semibold text-slate-700">
-            {room.building}
-          </p>
+          <p className="text-sm font-semibold text-slate-700">{room.building}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
           <MapPin className="h-4 w-4 text-slate-400" />
           <p className="mt-1.5 text-xs text-slate-400">Floor</p>
-          <p className="text-sm font-semibold text-slate-700">
-            {room.floor}
-          </p>
+          <p className="text-sm font-semibold text-slate-700">{room.floor}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
           <Users className="h-4 w-4 text-slate-400" />
           <p className="mt-1.5 text-xs text-slate-400">Capacity</p>
-          <p className="text-sm font-semibold text-slate-700">
-            {room.capacity} people
-          </p>
+          <p className="text-sm font-semibold text-slate-700">{room.capacity} people</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
@@ -107,9 +94,7 @@ export default function RoomPresentation({
         <div className="mb-6 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4">
           <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-rose-600" />
           <div>
-            <p className="text-sm font-semibold text-rose-700">
-              This room is blocked
-            </p>
+            <p className="text-sm font-semibold text-rose-700">This room is blocked</p>
             <p className="mt-0.5 text-sm text-rose-600">
               All availability checks will be rejected until the room is unblocked.
             </p>

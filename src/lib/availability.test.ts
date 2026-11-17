@@ -1,12 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import {
-  checkAvailability,
-  selectedRoom,
-  type Room,
-} from './availability'; // Adjust import path if necessary
+import { checkAvailability, selectedRoom, type Room } from './availability'; // Adjust import path if necessary
 
 describe('Availability regression tests – AC1 to AC6', () => {
-  
   // AC1: Reject past requests
   it('TC01: rejects a booking starting at the current time', () => {
     const result = checkAvailability(selectedRoom, 600, 660, 600);
@@ -74,9 +69,7 @@ describe('Availability regression tests – AC1 to AC6', () => {
 
   // AC5: Booking data must not be modified
   it('TC07: does not mutate the original room or its booking fixtures', () => {
-    const originalRoom = JSON.parse(
-      JSON.stringify(selectedRoom)
-    );
+    const originalRoom = JSON.parse(JSON.stringify(selectedRoom));
 
     // Run several availability checks against the original fixture.
     checkAvailability(selectedRoom, 600, 660, 500);
@@ -88,5 +81,4 @@ describe('Availability regression tests – AC1 to AC6', () => {
     expect(selectedRoom.bookings).toHaveLength(4);
     expect(selectedRoom.bookings).toEqual(originalRoom.bookings);
   });
-
 });

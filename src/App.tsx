@@ -1,5 +1,5 @@
 import RoomPresentation from '@/components/RoomPresentation';
-import { selectedRoom, roomCatalog, } from '@/lib/roomData';
+import { selectedRoom, roomCatalog } from '@/lib/roomData';
 import { filterRooms } from '@/lib/roomFilters';
 import { minutesToLabel } from '@/lib/availability';
 
@@ -8,29 +8,20 @@ import AvailabilityForm from '@/components/AvailabilityForm';
 
 export default function App() {
   const [room, setRoom] = useState(selectedRoom);
-  
+
   const handleRoomChange = useCallback((nextRoom: typeof selectedRoom) => {
     setRoom(nextRoom);
   }, []);
-
-  
 
   const toggleBlocked = () => setRoom((r) => ({ ...r, blocked: !r.blocked }));
 
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-10">
-       <RoomPresentation
-          room={room}
-          onToggleBlocked={toggleBlocked}
-        />
+        <RoomPresentation room={room} onToggleBlocked={toggleBlocked} />
 
         {/* Availability checker */}
-        <AvailabilityForm
-          room={room}
-          rooms={roomCatalog}
-          onRoomChange={handleRoomChange}
-        />
+        <AvailabilityForm room={room} rooms={roomCatalog} onRoomChange={handleRoomChange} />
 
         {/* Existing bookings list */}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">

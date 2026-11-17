@@ -1,7 +1,4 @@
-import {
-  MAX_ATTENDEES,
-  EQUIPMENT_OPTIONS,
-} from '@/lib/config';
+import { MAX_ATTENDEES, EQUIPMENT_OPTIONS } from '@/lib/config';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Clock, AlertCircle, CheckCircle2, CalendarClock } from 'lucide-react';
 import type { Room, AvailabilityResult } from '@/lib/availability';
@@ -23,42 +20,32 @@ interface AvailabilityFormProps {
   onRoomChange: (room: Room) => void;
 }
 
-export default function AvailabilityForm({
-  room,
-  rooms,
-  onRoomChange,
-}: AvailabilityFormProps) {
+export default function AvailabilityForm({ room, rooms, onRoomChange }: AvailabilityFormProps) {
   const [startInput, setStartInput] = useState('');
   const [endInput, setEndInput] = useState('');
   const [result, setResult] = useState<AvailabilityResult | null>(null);
-  const [candidate, setCandidate] = useState<
-    { start: number; end: number } | undefined
-  >(undefined);
+  const [candidate, setCandidate] = useState<{ start: number; end: number } | undefined>(undefined);
   const [nowMin, setNowMin] = useState(getNowMinutes());
   const [attendees, setAttendees] = useState(1);
   const [requiredEquipment, setRequiredEquipment] = useState<string[]>([]);
 
   const previousRoomId = useRef(room.id);
 
-  const applyAvailabilityResult = (
-  nextResult: AvailabilityResult,
-  start: number,
-  end: number
-) => {
-  setResult(nextResult);
+  const applyAvailabilityResult = (nextResult: AvailabilityResult, start: number, end: number) => {
+    setResult(nextResult);
 
-   setCandidate(
+    setCandidate(
       nextResult.available ||
-      nextResult.reason === 'overlap' ||
-      nextResult.reason === 'out_of_hours'
+        nextResult.reason === 'overlap' ||
+        nextResult.reason === 'out_of_hours'
         ? { start, end }
-        : undefined
+        : undefined,
     );
   };
 
   const matchingRooms = useMemo(
     () => filterRooms(rooms, attendees, requiredEquipment),
-    [rooms, attendees, requiredEquipment]
+    [rooms, attendees, requiredEquipment],
   );
 
   // Clear availability when the selected room changes externally.
@@ -72,9 +59,7 @@ export default function AvailabilityForm({
 
   // Keep the selected room inside the filtered results.
   useEffect(() => {
-    const currentRoomMatches = matchingRooms.some(
-      (matchingRoom) => matchingRoom.id === room.id
-    );
+    const currentRoomMatches = matchingRooms.some((matchingRoom) => matchingRoom.id === room.id);
 
     if (!currentRoomMatches && matchingRooms.length > 0) {
       onRoomChange(matchingRooms[0]);
@@ -88,7 +73,7 @@ export default function AvailabilityForm({
     setRequiredEquipment((current) =>
       current.includes(equipment)
         ? current.filter((item) => item !== equipment)
-        : [...current, equipment]
+        : [...current, equipment],
     );
 
     setResult(null);
@@ -96,9 +81,7 @@ export default function AvailabilityForm({
   };
 
   const handleRoomSelection = (roomId: string) => {
-    const nextRoom = matchingRooms.find(
-      (matchingRoom) => matchingRoom.id === roomId
-    );
+    const nextRoom = matchingRooms.find((matchingRoom) => matchingRoom.id === roomId);
 
     if (!nextRoom) return;
 
@@ -117,21 +100,16 @@ export default function AvailabilityForm({
     const currentNow = getNowMinutes();
     setNowMin(currentNow);
 
-    const nextResult = checkAvailability(
-      nextRoom,
-      start,
-      end,
-      currentNow
-    );
+    const nextResult = checkAvailability(nextRoom, start, end, currentNow);
 
     setResult(nextResult);
 
     setCandidate(
       nextResult.available ||
-      nextResult.reason === 'overlap' ||
-      nextResult.reason === 'out_of_hours'
+        nextResult.reason === 'overlap' ||
+        nextResult.reason === 'out_of_hours'
         ? { start, end }
-        : undefined
+        : undefined,
     );
   };
 
@@ -142,11 +120,7 @@ export default function AvailabilityForm({
       return;
     }
 
-    if (
-      !Number.isInteger(attendees) ||
-      attendees < 1 ||
-      attendees > 30
-    ) {
+    if (!Number.isInteger(attendees) || attendees < 1 || attendees > 30) {
       setResult({
         available: false,
         reason: 'invalid_range',
@@ -187,13 +161,7 @@ export default function AvailabilityForm({
     setResult(res);
 
     applyAvailabilityResult(res, start, end);
-  }, [
-    startInput,
-    endInput,
-    room,
-    matchingRooms.length,
-    attendees,
-  ]);
+  }, [startInput, endInput, room, matchingRooms.length, attendees]);
 
   const duration = (() => {
     const s = parseTimeInput(startInput.trim());
@@ -215,9 +183,7 @@ export default function AvailabilityForm({
         />
       ) : (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-          <p className="text-sm font-semibold text-amber-800">
-            No matching rooms
-          </p>
+          <p className="text-sm font-semibold text-amber-800">No matching rooms</p>
           <p className="mt-1 text-sm text-amber-700">
             Change your attendee or equipment requirements to see available rooms.
           </p>
@@ -227,17 +193,12 @@ export default function AvailabilityForm({
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-4 flex items-center gap-2">
           <CalendarClock className="h-5 w-5 text-slate-600" />
-          <h2 className="text-base font-semibold text-slate-800">
-            Check Availability
-          </h2>
+          <h2 className="text-base font-semibold text-slate-800">Check Availability</h2>
         </div>
 
         {/* Attendees */}
         <div className="mb-4">
-          <label
-            htmlFor="attendees"
-            className="mb-1.5 block text-sm font-medium text-slate-600"
-          >
+          <label htmlFor="attendees" className="mb-1.5 block text-sm font-medium text-slate-600">
             Required attendees
           </label>
 
@@ -249,9 +210,7 @@ export default function AvailabilityForm({
             step="1"
             value={attendees}
             onChange={(e) => {
-              const value = e.target.value === ''
-                ? 0
-                : Number(e.target.value);
+              const value = e.target.value === '' ? 0 : Number(e.target.value);
 
               setAttendees(value);
               setResult(null);
@@ -261,17 +220,13 @@ export default function AvailabilityForm({
           />
 
           {(attendees < 1 || attendees > 30 || !Number.isInteger(attendees)) && (
-            <p className="mt-1 text-xs text-amber-600">
-              Enter a whole number between 1 and 30.
-            </p>
+            <p className="mt-1 text-xs text-amber-600">Enter a whole number between 1 and 30.</p>
           )}
         </div>
 
         {/* Equipment */}
         <div className="mb-4">
-          <p className="mb-2 text-sm font-medium text-slate-600">
-            Required equipment
-          </p>
+          <p className="mb-2 text-sm font-medium text-slate-600">Required equipment</p>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {EQUIPMENT_OPTIONS.map((equipment) => (
@@ -293,16 +248,12 @@ export default function AvailabilityForm({
 
         {/* Matching rooms */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-medium text-slate-700">
-            Matching rooms
-          </p>
-        
+          <p className="text-sm font-medium text-slate-700">Matching rooms</p>
+
           <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
             {matchingRooms.length} found
           </span>
         </div>
-
-        
 
         {/* Room selection */}
         <div className="mb-4">
@@ -335,15 +286,13 @@ export default function AvailabilityForm({
               <div className="mb-2 flex justify-center">
                 <AlertCircle className="h-8 w-8 text-amber-600" />
               </div>
-            
-              <h3 className="text-sm font-semibold text-amber-800">
-                No matching rooms found
-              </h3>
-            
+
+              <h3 className="text-sm font-semibold text-amber-800">No matching rooms found</h3>
+
               <p className="mt-1 text-sm text-amber-700">
                 No rooms currently meet your attendee and equipment requirements.
               </p>
-            
+
               <p className="mt-2 text-xs text-amber-600">
                 Try reducing the number of attendees or removing an equipment requirement.
               </p>
@@ -354,10 +303,7 @@ export default function AvailabilityForm({
         {/* Time inputs */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="start-time"
-              className="mb-1.5 block text-sm font-medium text-slate-600"
-            >
+            <label htmlFor="start-time" className="mb-1.5 block text-sm font-medium text-slate-600">
               Start time
             </label>
 
@@ -379,10 +325,7 @@ export default function AvailabilityForm({
           </div>
 
           <div>
-            <label
-              htmlFor="end-time"
-              className="mb-1.5 block text-sm font-medium text-slate-600"
-            >
+            <label htmlFor="end-time" className="mb-1.5 block text-sm font-medium text-slate-600">
               End time
             </label>
 
@@ -408,15 +351,15 @@ export default function AvailabilityForm({
         {matchingRooms.length > 0 && (
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
             <span>
-              Room hours: {minutesToLabel(room.openTime)}–
-              {minutesToLabel(room.closeTime)}
+              Room hours: {minutesToLabel(room.openTime)}–{minutesToLabel(room.closeTime)}
             </span>
             <span>Max duration: {durationLabel(MAX_DURATION)}</span>
 
             {duration !== null && (
-              <span className={duration > MAX_DURATION
-                ? 'font-medium text-amber-600'
-                : 'text-slate-500'}
+              <span
+                className={
+                  duration > MAX_DURATION ? 'font-medium text-amber-600' : 'text-slate-500'
+                }
               >
                 Your duration: {durationLabel(duration)}
               </span>
@@ -445,9 +388,7 @@ export default function AvailabilityForm({
           role="status"
           aria-live="polite"
           className={`rounded-2xl border p-4 shadow-sm transition sm:p-6 ${
-            result.available
-              ? 'border-emerald-200 bg-emerald-50'
-              : 'border-amber-200 bg-amber-50'
+            result.available ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'
           }`}
         >
           <div className="flex items-start gap-3">
@@ -460,17 +401,13 @@ export default function AvailabilityForm({
             <div>
               <p
                 className={`text-sm font-bold ${
-                  result.available
-                    ? 'text-emerald-800'
-                    : 'text-amber-800'
+                  result.available ? 'text-emerald-800' : 'text-amber-800'
                 }`}
               >
                 {result.available ? 'Available' : 'Unavailable'}
               </p>
 
-              <p className="mt-0.5 text-sm text-slate-700">
-                {result.message}
-              </p>
+              <p className="mt-0.5 text-sm text-slate-700">{result.message}</p>
             </div>
           </div>
         </div>

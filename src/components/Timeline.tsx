@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 import type { Room, Booking } from '@/lib/availability';
 import { minutesToLabel, MINUTES_IN_DAY } from '@/lib/availability';
-import {
-  TIMELINE_START_HOUR,
-  TIMELINE_END_HOUR,
-  TIMELINE_HOUR_WIDTH,
-} from '@/lib/config';
+import { TIMELINE_START_HOUR, TIMELINE_END_HOUR, TIMELINE_HOUR_WIDTH } from '@/lib/config';
 
 interface TimelineProps {
   room: Room;
@@ -30,7 +26,12 @@ function xPos(min: number): number {
 
 const HOURS = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => START_HOUR + i);
 
-export default function Timeline({ room, candidateStart, candidateEnd, nowMinutes }: TimelineProps) {
+export default function Timeline({
+  room,
+  candidateStart,
+  candidateEnd,
+  nowMinutes,
+}: TimelineProps) {
   const nowX = useMemo(() => {
     if (nowMinutes < SPAN_MIN || nowMinutes > SPAN_MAX) return null;
     return xPos(nowMinutes);
@@ -39,12 +40,14 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
   const candidateVisible =
     candidateStart !== undefined &&
     candidateEnd !== undefined &&
-    candidateStart >= 0 && candidateEnd <= MINUTES_IN_DAY &&
+    candidateStart >= 0 &&
+    candidateEnd <= MINUTES_IN_DAY &&
     candidateStart < candidateEnd &&
-    candidateStart >= SPAN_MIN && candidateEnd <= SPAN_MAX;
+    candidateStart >= SPAN_MIN &&
+    candidateEnd <= SPAN_MAX;
 
   return (
-      <div className="min-w-0 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+    <div className="min-w-0 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-slate-700">Today's Schedule</h2>
         <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
@@ -52,7 +55,8 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
             <span className="h-3 w-3 rounded bg-slate-300 ring-1 ring-slate-400" /> Booked
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded border-2 border-emerald-500 bg-emerald-200" /> Your request
+            <span className="h-3 w-3 rounded border-2 border-emerald-500 bg-emerald-200" /> Your
+            request
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-3 w-0.5 bg-rose-500" />
@@ -61,10 +65,10 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
         </div>
       </div>
 
-        <div
-          className="w-full overflow-x-auto overscroll-x-contain pb-3"
-          aria-label="Room booking timeline. Scroll horizontally to view the schedule."
-        >
+      <div
+        className="w-full overflow-x-auto overscroll-x-contain pb-3"
+        aria-label="Room booking timeline. Scroll horizontally to view the schedule."
+      >
         <div style={{ minWidth: TRACK_WIDTH }}>
           {/* Gridlines layer */}
           <div className="relative" style={{ height: 0 }}>
@@ -105,7 +109,9 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
                   title={`${b.title} — ${minutesToLabel(b.start)} to ${minutesToLabel(b.end)}`}
                 >
                   {canShowTitle && (
-                    <span className="truncate text-[11px] font-semibold text-slate-700">{b.title}</span>
+                    <span className="truncate text-[11px] font-semibold text-slate-700">
+                      {b.title}
+                    </span>
                   )}
                 </div>
               );
@@ -115,9 +121,14 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
             {candidateVisible && candidateStart !== undefined && candidateEnd !== undefined && (
               <div
                 className="absolute top-3 flex h-10 items-center justify-center overflow-hidden rounded-lg border-2 border-emerald-500 bg-emerald-200/70"
-                style={{ left: xPos(candidateStart), width: xPos(candidateEnd) - xPos(candidateStart) }}
+                style={{
+                  left: xPos(candidateStart),
+                  width: xPos(candidateEnd) - xPos(candidateStart),
+                }}
               >
-                <span className="truncate text-[11px] font-semibold text-emerald-800">Requested</span>
+                <span className="truncate text-[11px] font-semibold text-emerald-800">
+                  Requested
+                </span>
               </div>
             )}
 
@@ -145,7 +156,13 @@ export default function Timeline({ room, candidateStart, candidateEnd, nowMinute
                   className="absolute -translate-x-1/2"
                   style={{ left: xPos(h * 60) }}
                 >
-                  <span className={isEven ? 'text-[10px] font-semibold text-slate-500' : 'text-[9px] text-slate-300'}>
+                  <span
+                    className={
+                      isEven
+                        ? 'text-[10px] font-semibold text-slate-500'
+                        : 'text-[9px] text-slate-300'
+                    }
+                  >
                     {h === 12 ? '12 PM' : h > 12 ? `${h - 12} PM` : `${h} AM`}
                   </span>
                 </div>

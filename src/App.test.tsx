@@ -1,13 +1,8 @@
-
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import {
-  checkAvailability,
-} from '@/lib/availability';
+import { checkAvailability } from '@/lib/availability';
 
-import {
-  filterRooms,
-} from '@/lib/roomFilters';
+import { filterRooms } from '@/lib/roomFilters';
 
 import App from './App';
 
@@ -34,12 +29,7 @@ function createRoom(overrides: Partial<Room> = {}): Room {
   };
 }
 
-function check(
-  room: Room,
-  start: number,
-  end: number,
-  now = 600
-) {
+function check(room: Room, start: number, end: number, now = 600) {
   return checkAvailability(room, start, end, now);
 }
 
@@ -54,9 +44,7 @@ function enterTime(start: string, end: string) {
 }
 
 function clickCheckAvailability() {
-  fireEvent.click(
-    screen.getByRole('button', { name: /check availability/i })
-  );
+  fireEvent.click(screen.getByRole('button', { name: /check availability/i }));
 }
 
 // --------------------------------------------------
@@ -64,7 +52,6 @@ function clickCheckAvailability() {
 // --------------------------------------------------
 
 describe('Smart Campus Room Availability Checker', () => {
-
   // T01 AC1: Invalid intervals and current-time boundary.
   it('T01 AC1: rejects invalid intervals and accepts only times strictly after now', () => {
     const room = createRoom();
@@ -244,39 +231,29 @@ describe('Smart Campus Room Availability Checker', () => {
 
     // Missing one required item.
     const missingEquipment = filterRooms(
-      [createRoom({
-        equipment: ['projector'],
-      })],
+      [
+        createRoom({
+          equipment: ['projector'],
+        }),
+      ],
       5,
-      ['projector', 'whiteboard']
+      ['projector', 'whiteboard'],
     );
 
     expect(missingEquipment).toHaveLength(0);
 
     // Room containing a superset of required equipment.
-    const superset = filterRooms(
-      [room],
-      5,
-      ['projector', 'whiteboard']
-    );
+    const superset = filterRooms([room], 5, ['projector', 'whiteboard']);
 
     expect(superset).toHaveLength(1);
 
     // No equipment selection should not filter by equipment.
-    const noSelection = filterRooms(
-      [room],
-      5,
-      []
-    );
+    const noSelection = filterRooms([room], 5, []);
 
     expect(noSelection).toHaveLength(1);
 
     // Requirements matching no room.
-    const noMatchingRooms = filterRooms(
-      [room],
-      5,
-      ['microphone']
-    );
+    const noMatchingRooms = filterRooms([room], 5, ['microphone']);
 
     expect(noMatchingRooms).toHaveLength(0);
   });
@@ -309,9 +286,7 @@ describe('Smart Campus Room Availability Checker', () => {
     enterTime('invalid', '11:30 AM');
     clickCheckAvailability();
 
-    expect(
-      screen.getByText(/times must be in the format/i)
-    ).toBeTruthy();
+    expect(screen.getByText(/times must be in the format/i)).toBeTruthy();
 
     // Valid, unoccupied interval.
     enterTime('10:30 AM', '11:30 AM');
@@ -340,9 +315,7 @@ describe('Smart Campus Room Availability Checker', () => {
     fireEvent.click(screen.getByLabelText(/computers/i));
     fireEvent.click(screen.getByLabelText(/microphone/i));
 
-    expect(
-      screen.getByText(/no matching rooms found/i)
-    ).toBeTruthy();
+    expect(screen.getByText(/no matching rooms found/i)).toBeTruthy();
   });
 
   // T12 F5: Room selection refreshes availability.

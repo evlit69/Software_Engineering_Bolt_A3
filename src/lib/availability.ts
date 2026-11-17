@@ -2,7 +2,7 @@ export interface Booking {
   id: string;
   title: string;
   start: number; // minutes after midnight (inclusive)
-  end: number;   // minutes after midnight (exclusive)
+  end: number; // minutes after midnight (exclusive)
 }
 
 export interface Room {
@@ -13,7 +13,7 @@ export interface Room {
   capacity: number;
   equipment: string[];
   blocked: boolean;
-  openTime: number;  // minutes after midnight
+  openTime: number; // minutes after midnight
   closeTime: number; // minutes after midnight
   bookings: Booking[];
 }
@@ -46,7 +46,6 @@ export function minutesToLabel(min: number): string {
   return `${displayH}:${m.toString().padStart(2, '0')} ${period}`;
 }
 
-
 export function parseTimeInput(value: string): number | null {
   const m = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
   if (!m) return null;
@@ -62,7 +61,6 @@ export function parseTimeInput(value: string): number | null {
 
   return h * 60 + min;
 }
-
 
 export function durationLabel(min: number): string {
   if (min < 60) return `${min} min`;
@@ -80,16 +78,28 @@ export function checkAvailability(
   room: Room,
   start: number,
   end: number,
-  nowMinutes: number
+  nowMinutes: number,
 ): AvailabilityResult {
   if (!Number.isInteger(start) || !Number.isInteger(end)) {
-    return { available: false, reason: 'invalid_range', message: 'Start and end times must be whole minutes.' };
+    return {
+      available: false,
+      reason: 'invalid_range',
+      message: 'Start and end times must be whole minutes.',
+    };
   }
   if (start < 0 || end > MINUTES_IN_DAY) {
-    return { available: false, reason: 'invalid_range', message: 'Times must be within the same day (0–1440 minutes).' };
+    return {
+      available: false,
+      reason: 'invalid_range',
+      message: 'Times must be within the same day (0–1440 minutes).',
+    };
   }
   if (start >= end) {
-    return { available: false, reason: 'invalid_range', message: 'Start time must be before end time.' };
+    return {
+      available: false,
+      reason: 'invalid_range',
+      message: 'Start time must be before end time.',
+    };
   }
   if (start <= nowMinutes) {
     return {
