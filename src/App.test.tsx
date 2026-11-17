@@ -6,9 +6,6 @@ import { filterRooms } from '@/lib/roomFilters';
 
 import App from './App';
 
-// Adjust this import if step 1 placed roomCatalog in a different file.
-import { roomCatalog } from '@/lib/roomData';
-
 // --------------------------------------------------
 // Test helpers
 // --------------------------------------------------
