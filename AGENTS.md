@@ -2,13 +2,15 @@
 
 ## Project
 
-Smart Campus room availability checker. One room, fictional bookings, fixed current time. Availability decision only.
+Smart Campus room availability checker. A small catalog of fictional rooms with fictional bookings. Availability decision only: the app never creates, stores, or confirms a booking. There is no login and no database; all data is in-memory and fictional.
 
 ## Structure
 
-- src/lib/availability.ts: checkAvailability (booking rules) and selectedRoom fixture
+- src/lib/availability.ts: types, time parsing/formatting, and checkAvailability (booking rules)
 - src/lib/availability.test.ts: regression tests for AC1-AC6
-- src/lib/time.ts: shared time parsing/formatting (to be created in this refactor)
+- src/lib/roomData.ts: fictional room catalog and the selectedRoom fixture
+- src/lib/roomFilters.ts: filterRooms by capacity and equipment
+- src/lib/config.ts: MAX_ATTENDEES, EQUIPMENT_OPTIONS, timeline sizing
 - src/components/AvailabilityForm.tsx: input, parsing, result card
 - src/components/Timeline.tsx: daily timeline bar
 - src/App.tsx: page layout, blocked toggle
@@ -21,8 +23,12 @@ Preserve AC1-AC6:
 - AC2: reject durations longer than 120 minutes
 - AC3: reject a blocked room
 - AC4: reject overlaps; touching only at endpoints is allowed
-- AC5-AC6: do not mutate booking data; keep clear desktop/mobile feedback
-  No backend, login, database or booking creation.
+- AC5: do not mutate booking fixtures or change their values
+- AC6: keep clear, understandable feedback on both desktop and mobile
+
+No backend, login, database, or booking creation.
+No secrets, credentials, or environment variables with real values.
+No external deployments, remote pushes, or calls to external services.
 
 ## Engineering rules
 
@@ -41,9 +47,10 @@ Preserve AC1-AC6:
 - Lint: npm run lint
 - Build: npm run build
 - Tests: npx vitest run
+- Full verification: npm run check (format:check + lint + typecheck + test + build)
 
 ## Verification
 
-Run existing tests and add focused regression tests.
+Before proposing acceptance, run `npm run check` and ensure it passes, then add focused regression tests for any behavior you change.
 Report changed files, rationale and test evidence.
 List any change you made that was not requested.
