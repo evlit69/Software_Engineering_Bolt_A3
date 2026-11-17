@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { checkAvailability, type Room } from './availability'; 
+import { checkAvailability, type Room } from './availability';
 import { selectedRoom } from './roomData';
 
 describe('Availability regression tests – AC1 to AC6', () => {
