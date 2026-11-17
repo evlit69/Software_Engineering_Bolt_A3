@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { checkAvailability, selectedRoom, type Room } from './availability'; // Adjust import path if necessary
+import { checkAvailability, type Room } from './availability'; 
+import { selectedRoom } from './roomData';
 
 describe('Availability regression tests – AC1 to AC6', () => {
   // AC1: Reject past requests
