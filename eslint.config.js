@@ -10,16 +10,6 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
-    // ...your existing settings (react-hooks, react-refresh)
-  },
-  prettier,
-);
-
-export default tseslint.config(
-  { ignores: ['dist', 'coverage'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
