@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { checkAvailability } from '@/lib/availability';
+import { checkAvailability, Room } from '@/lib/availability';
 
 import { filterRooms } from '@/lib/roomFilters';
 
