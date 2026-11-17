@@ -1,6 +1,5 @@
 import RoomPresentation from '@/components/RoomPresentation';
 import { selectedRoom, roomCatalog } from '@/lib/roomData';
-import { filterRooms } from '@/lib/roomFilters';
 import { minutesToLabel } from '@/lib/availability';
 
 import { useCallback, useState } from 'react';
