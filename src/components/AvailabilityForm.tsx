@@ -35,6 +35,8 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
     | { state: 'ok'; text: string }
     | { state: 'error'; message: string }
   >({ state: 'idle' });
+  const [simulate, setSimulate] = useState<SimulatedFailure>('none');
+  const explainRequestId = useRef(0);
 
   const previousRoomId = useRef(room.id);
 
