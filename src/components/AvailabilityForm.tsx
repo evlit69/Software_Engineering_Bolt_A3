@@ -1,6 +1,6 @@
 import { EQUIPMENT_OPTIONS } from '@/lib/config';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { Clock, AlertCircle, CheckCircle2, CalendarClock } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2, CalendarClock, Sparkles } from 'lucide-react';
 import type { Room, AvailabilityResult } from '@/lib/availability';
 import {
   checkAvailability,
@@ -10,6 +10,7 @@ import {
   MAX_DURATION,
   parseTimeInput,
 } from '@/lib/availability';
+import { explainAvailability } from '@/lib/explanation';
 
 import { filterRooms } from '@/lib/roomFilters';
 import Timeline from './Timeline';
@@ -28,20 +29,32 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
   const [nowMin, setNowMin] = useState(getNowMinutes());
   const [attendees, setAttendees] = useState(1);
   const [requiredEquipment, setRequiredEquipment] = useState<string[]>([]);
+  const [explanation, setExplanation] = useState<
+    | { state: 'idle' }
+    | { state: 'loading' }
+    | { state: 'ok'; text: string }
+    | { state: 'error'; message: string }
+  >({ state: 'idle' });
 
   const previousRoomId = useRef(room.id);
 
-  const applyAvailabilityResult = (nextResult: AvailabilityResult, start: number, end: number) => {
-    setResult(nextResult);
+  const clearExplanation = useCallback(() => setExplanation({ state: 'idle' }), []);
 
-    setCandidate(
-      nextResult.available ||
-        nextResult.reason === 'overlap' ||
-        nextResult.reason === 'out_of_hours'
-        ? { start, end }
-        : undefined,
-    );
-  };
+  const applyAvailabilityResult = useCallback(
+    (nextResult: AvailabilityResult, start: number, end: number) => {
+      setResult(nextResult);
+      clearExplanation();
+
+      setCandidate(
+        nextResult.available ||
+          nextResult.reason === 'overlap' ||
+          nextResult.reason === 'out_of_hours'
+          ? { start, end }
+          : undefined,
+      );
+    },
+    [clearExplanation],
+  );
 
   const matchingRooms = useMemo(
     () => filterRooms(rooms, attendees, requiredEquipment),
@@ -54,8 +67,9 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
       previousRoomId.current = room.id;
       setResult(null);
       setCandidate(undefined);
+      clearExplanation();
     }
-  }, [room.id]);
+  }, [room.id, clearExplanation]);
 
   // Keep the selected room inside the filtered results.
   useEffect(() => {
@@ -78,6 +92,7 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
 
     setResult(null);
     setCandidate(undefined);
+    clearExplanation();
   };
 
   const handleRoomSelection = (roomId: string) => {
@@ -161,7 +176,26 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
     setResult(res);
 
     applyAvailabilityResult(res, start, end);
-  }, [startInput, endInput, room, matchingRooms.length, attendees]);
+  }, [startInput, endInput, room, matchingRooms.length, attendees, applyAvailabilityResult]);
+
+  const handleExplain = useCallback(async () => {
+    if (!result || candidate === undefined) return;
+
+    setExplanation({ state: 'loading' });
+
+    const outcome = await explainAvailability({
+      room,
+      result,
+      start: candidate.start,
+      end: candidate.end,
+    });
+
+    if ('text' in outcome) {
+      setExplanation({ state: 'ok', text: outcome.text });
+    } else {
+      setExplanation({ state: 'error', message: outcome.message });
+    }
+  }, [result, candidate, room]);
 
   const duration = (() => {
     const s = parseTimeInput(startInput.trim());
@@ -410,6 +444,44 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
               <p className="mt-0.5 text-sm text-slate-700">{result.message}</p>
             </div>
           </div>
+
+          {candidate !== undefined && explanation.state !== 'ok' && (
+            <button
+              onClick={handleExplain}
+              disabled={explanation.state === 'loading'}
+              className="mt-3 flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              {explanation.state === 'loading' ? 'Explaining…' : 'Explain this result'}
+            </button>
+          )}
+
+          {explanation.state === 'ok' && (
+            <div className="mt-3 rounded-lg border border-slate-200 bg-white/70 p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Explanation
+              </p>
+              <p className="mt-1 text-sm text-slate-700">{explanation.text}</p>
+              <button
+                onClick={() => setExplanation({ state: 'idle' })}
+                className="mt-2 text-xs font-medium text-slate-500 hover:text-slate-700"
+              >
+                Hide
+              </button>
+            </div>
+          )}
+
+          {explanation.state === 'error' && (
+            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <p className="text-xs text-amber-800">{explanation.message}</p>
+              <button
+                onClick={() => setExplanation({ state: 'idle' })}
+                className="mt-2 text-xs font-medium text-amber-700 hover:text-amber-900"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
