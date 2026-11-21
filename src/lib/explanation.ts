@@ -113,3 +113,28 @@ export async function explainAvailability(req: unknown,  simulate: SimulatedFail
     };
   }
 }
+
+export const EXPLAIN_TIMEOUT_MS = 3000;
+
+export async function explainWithTimeout(
+  req: unknown,
+  simulate: SimulatedFailure = 'none',
+  ms: number = EXPLAIN_TIMEOUT_MS,
+): Promise<ExplanationResponse | ExplanationError> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<ExplanationError>((resolve) => {
+    timer = setTimeout(
+      () =>
+        resolve({
+          message: 'The explanation took too long. The availability result above is still authoritative.',
+          code: 'adapter_failure',
+        }),
+      ms,
+    );
+  });
+  try {
+    return await Promise.race([explainAvailability(req, simulate), timeout]);
+  } finally {
+    clearTimeout(timer!);
+  }
+}
