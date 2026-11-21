@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { explainAvailability, validateExplanationRequest, type ExplanationRequest } from './explanation';
+import {
+  explainAvailability,
+  validateExplanationRequest,
+  type ExplanationRequest,
+} from './explanation';
 import { checkAvailability, type Room } from './availability';
 import { selectedRoom } from './roomData';
 

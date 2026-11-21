@@ -26,7 +26,6 @@ const VALID_REASONS: ReadonlyArray<AvailabilityResult['reason']> = [
   'too_long',
   'invalid_range',
   'past_time',
-  'max_exceeded',
 ];
 
 function isAvailabilityResult(value: unknown): value is AvailabilityResult {
@@ -84,8 +83,6 @@ function buildText(room: Room, result: AvailabilityResult, start: number, end: n
       return `The requested start time is at or before the current time. Choose a start time in the future.`;
     case 'invalid_range':
       return `The requested time range is invalid: ${result.message}`;
-    case 'max_exceeded':
-      return `The requested attendee count exceeds what this room supports. Reduce attendees or pick a larger room.`;
     default:
       return result.message;
   }
@@ -93,7 +90,10 @@ function buildText(room: Room, result: AvailabilityResult, start: number, end: n
 
 export type SimulatedFailure = 'none' | 'timeout' | 'error';
 
-export async function explainAvailability(req: unknown,  simulate: SimulatedFailure = 'none',): Promise<ExplanationResponse | ExplanationError> {
+export async function explainAvailability(
+  req: unknown,
+  simulate: SimulatedFailure = 'none',
+): Promise<ExplanationResponse | ExplanationError> {
   const validationError = validateExplanationRequest(req);
   if (validationError) return validationError;
 
@@ -108,7 +108,8 @@ export async function explainAvailability(req: unknown,  simulate: SimulatedFail
     return { text, source: 'mock-adapter' };
   } catch {
     return {
-      message: 'The explanation service could not produce a response. The availability result above is still authoritative.',
+      message:
+        'The explanation service could not produce a response. The availability result above is still authoritative.',
       code: 'adapter_failure',
     };
   }
@@ -126,7 +127,8 @@ export async function explainWithTimeout(
     timer = setTimeout(
       () =>
         resolve({
-          message: 'The explanation took too long. The availability result above is still authoritative.',
+          message:
+            'The explanation took too long. The availability result above is still authoritative.',
           code: 'adapter_failure',
         }),
       ms,
