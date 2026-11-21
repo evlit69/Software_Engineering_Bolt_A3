@@ -452,6 +452,21 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
             </div>
           </div>
 
+          {import.meta.env.DEV && (
+            <label className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+              Test mode:
+              <select
+                value={simulate}
+                onChange={(e) => setSimulate(e.target.value as SimulatedFailure)}
+                className="rounded border border-slate-300 bg-white px-2 py-1 text-xs"
+              >
+                <option value="none">Normal</option>
+                <option value="timeout">Simulate timeout</option>
+                <option value="error">Simulate API error</option>
+              </select>
+            </label>
+          )}
+          
           {candidate !== undefined && explanation.state !== 'ok' && (
             <button
               onClick={handleExplain}
