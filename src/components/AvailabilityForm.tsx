@@ -184,17 +184,18 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
   }, [startInput, endInput, room, matchingRooms.length, attendees, applyAvailabilityResult]);
 
   const handleExplain = useCallback(async () => {
-    if (!result || candidate === undefined) return;
+    if (!result) return;
+
+    const start = candidate?.start ?? parseTimeInput(startInput.trim());
+    const end = candidate?.end ?? parseTimeInput(endInput.trim());
+    if (start === null || end === null) return;
 
     const requestId = ++explainRequestId.current;
     setExplanation({ state: 'loading' });
 
-    const outcome = await explainWithTimeout(
-      { room, result, start: candidate.start, end: candidate.end },
-      simulate,
-    );
+    const outcome = await explainWithTimeout({ room, result, start, end }, simulate);
 
-    // если за это время результат изменился, ответ игнорируем
+    // Ignore the response if the result changed while the request was in flight.
     if (requestId !== explainRequestId.current) return;
 
     if ('text' in outcome) {
@@ -202,7 +203,7 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
     } else {
       setExplanation({ state: 'error', message: outcome.message });
     }
-  }, [result, candidate, room, simulate]);
+  }, [result, candidate, room, simulate, startInput, endInput]);
 
   const duration = (() => {
     const s = parseTimeInput(startInput.trim());
@@ -467,7 +468,7 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
             </label>
           )}
 
-          {candidate !== undefined && explanation.state !== 'ok' && (
+          {explanation.state !== 'ok' && (
             <button
               onClick={handleExplain}
               disabled={explanation.state === 'loading'}
