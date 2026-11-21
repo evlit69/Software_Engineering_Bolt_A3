@@ -40,7 +40,10 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
 
   const previousRoomId = useRef(room.id);
 
-  const clearExplanation = useCallback(() => setExplanation({ state: 'idle' }), []);
+  const clearExplanation = useCallback(() => {
+  explainRequestId.current += 1; // отменяем результат уже запущенного запроса
+  setExplanation({ state: 'idle' });
+}, []);
 
   const applyAvailabilityResult = useCallback(
     (nextResult: AvailabilityResult, start: number, end: number) => {
