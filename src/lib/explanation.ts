@@ -91,13 +91,18 @@ function buildText(room: Room, result: AvailabilityResult, start: number, end: n
   }
 }
 
-export async function explainAvailability(req: unknown): Promise<ExplanationResponse | ExplanationError> {
+export type SimulatedFailure = 'none' | 'timeout' | 'error';
+
+export async function explainAvailability(req: unknown,  simulate: SimulatedFailure = 'none',): Promise<ExplanationResponse | ExplanationError> {
   const validationError = validateExplanationRequest(req);
   if (validationError) return validationError;
 
   const { room, result, start, end } = req as ExplanationRequest;
 
   try {
+    if (simulate === 'error') throw new Error('Simulated API failure');
+    if (simulate === 'timeout') await new Promise((r) => setTimeout(r, 10000)); // "зависание"
+
     const text = buildText(room, result, start, end);
     await new Promise((resolve) => setTimeout(resolve, 0));
     return { text, source: 'mock-adapter' };
