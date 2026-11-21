@@ -184,23 +184,25 @@ export default function AvailabilityForm({ room, rooms, onRoomChange }: Availabi
   }, [startInput, endInput, room, matchingRooms.length, attendees, applyAvailabilityResult]);
 
   const handleExplain = useCallback(async () => {
-    if (!result || candidate === undefined) return;
+  if (!result || candidate === undefined) return;
 
-    setExplanation({ state: 'loading' });
+  const requestId = ++explainRequestId.current;
+  setExplanation({ state: 'loading' });
 
-    const outcome = await explainAvailability({
-      room,
-      result,
-      start: candidate.start,
-      end: candidate.end,
-    });
+  const outcome = await explainWithTimeout(
+    { room, result, start: candidate.start, end: candidate.end },
+    simulate,
+  );
 
-    if ('text' in outcome) {
-      setExplanation({ state: 'ok', text: outcome.text });
-    } else {
-      setExplanation({ state: 'error', message: outcome.message });
-    }
-  }, [result, candidate, room]);
+  // если за это время результат изменился, ответ игнорируем
+  if (requestId !== explainRequestId.current) return;
+
+  if ('text' in outcome) {
+    setExplanation({ state: 'ok', text: outcome.text });
+  } else {
+    setExplanation({ state: 'error', message: outcome.message });
+  }
+}, [result, candidate, room, simulate]);
 
   const duration = (() => {
     const s = parseTimeInput(startInput.trim());
