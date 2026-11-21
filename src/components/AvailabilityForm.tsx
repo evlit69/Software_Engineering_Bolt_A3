@@ -10,7 +10,7 @@ import {
   MAX_DURATION,
   parseTimeInput,
 } from '@/lib/availability';
-import { explainAvailability } from '@/lib/explanation';
+import { explainWithTimeout, type SimulatedFailure } from '@/lib/explanation';
 
 import { filterRooms } from '@/lib/roomFilters';
 import Timeline from './Timeline';
